@@ -1,4 +1,3 @@
-import { IUser } from "@/src/types";
 import { baseApi } from "../api/baseApi";
 
 export const userApi = baseApi.injectEndpoints({
@@ -31,7 +30,7 @@ export const userApi = baseApi.injectEndpoints({
     }),
 
     deleteUser: builder.mutation({
-      query: ( userId) => ({
+      query: (userId) => ({
         url: `/auth/${userId}`,
         method: "DELETE",
       }),
@@ -54,6 +53,16 @@ export const userApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["user"],
     }),
+    resetPassword: builder.mutation({
+      query: ({ data, userId, token }) => {
+        return {
+          url: `/auth/reset-password/${token}/${userId}`, 
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: ["user"],
+    }),
   }),
 });
 
@@ -63,5 +72,6 @@ export const {
   useDeleteUserMutation,
   useUpdateProfileMutation,
   useGetUpdateUserQuery,
-  useForgetPasswordMutation
+  useForgetPasswordMutation,
+  useResetPasswordMutation
 } = userApi;

@@ -1,12 +1,13 @@
 "use client";
-import { useUser } from "@/src/context/user.provider";
-import { useUserLogin } from "@/src/hooks/auth.hooks";
-import { useForgetPasswordMutation } from "@/src/redux/features/user";
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { toast } from "sonner";
+
+import { useForgetPasswordMutation } from "@/src/redux/features/user";
+import { useUserLogin } from "@/src/hooks/auth.hooks";
+import { useUser } from "@/src/context/user.provider";
 
 interface LoginDataType {
   email: string;
@@ -30,6 +31,7 @@ const LoginPage = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
     setLoginData({ ...loginData, [name]: value });
   };
 
@@ -44,6 +46,7 @@ const LoginPage = () => {
   const handleForgotPassword = async () => {
     if (!forgotEmail) {
       toast.error("Please enter a valid email.");
+
       return;
     }
 
@@ -56,7 +59,12 @@ const LoginPage = () => {
     }
   };
 
-  const { mutate: handleUserLogin, isPending, isSuccess, isError } = useUserLogin();
+  const {
+    mutate: handleUserLogin,
+    isPending,
+    isSuccess,
+    isError,
+  } = useUserLogin();
 
   const handleLogin = () => {
     const data = {
@@ -68,6 +76,7 @@ const LoginPage = () => {
     setIsLoading(true);
   };
 
+  
   useEffect(() => {
     if (isSuccess) {
       if (redirect) {
@@ -85,15 +94,17 @@ const LoginPage = () => {
   return (
     <div className="flex h-screen items-center justify-center p-4">
       <div className="shadow-lg rounded-lg p-8 w-full max-w-md">
-        <h1 className="text-5xl font-black text-center mb-8 font-title">Login Now!</h1>
+        <h1 className="text-5xl font-black text-center mb-8 font-title">
+          Login Now!
+        </h1>
 
         <div>
           <Input
             key={"outside"}
-            type="email"
             label="Email"
             labelPlacement={"outside"}
             name="email"
+            type="email"
             value={loginData.email}
             onChange={handleInputChange}
           />
@@ -101,43 +112,46 @@ const LoginPage = () => {
         <div>
           <Input
             key={"outside"}
-            type="password"
             label="Password"
             labelPlacement={"outside"}
             name="password"
+            type="password"
             value={loginData.password}
             onChange={handleInputChange}
           />
         </div>
         <div className="mt-2">
-          <p
+          <button
             className="text-sm flex justify-end items-end text-blue-600 hover:underline hover:cursor-pointer"
             onClick={toggleModal} // Open modal on click
           >
             Forgot password?
-          </p>
+          </button>
         </div>
         <Button
-          onClick={handleLogin}
           className="w-full mt-6 rounded-xl"
-          size="sm"
           color="primary"
-          variant="ghost"
           isLoading={isPending}
+          size="sm"
+          variant="ghost"
+          onClick={handleLogin}
         >
           {isPending ? "Logging in..." : "Login"}
         </Button>
 
         <div className="flex items-center my-6">
-          <div className="border-t w-full"></div>
+          <div className="border-t w-full" />
           <span className="mx-4 text-gray-500">or</span>
-          <div className="border-t w-full"></div>
+          <div className="border-t w-full" />
         </div>
 
         <div className="text-center">
           <p className="text-gray-700">
             Don’t have an account?{" "}
-            <a href="/register" className="text-blue-600 font-semibold hover:underline">
+            <a
+              className="text-blue-600 font-semibold hover:underline"
+              href="/register"
+            >
               Create one now
             </a>
           </p>
@@ -146,53 +160,70 @@ const LoginPage = () => {
 
       {/* Modal for Forgot Password */}
       {isModalOpen && (
-  <div className="fixed inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center transition-opacity duration-300 ease-in-out">
-    {/* Modal Container */}
-    <div className="relative bg-[#1e1e1e] p-8 rounded-xl shadow-lg w-full max-w-md transform transition-transform duration-500 ease-in-out scale-100">
-      <h2 className="text-2xl font-bold text-white text-center mb-6">
-        Forgot Your Password?
-      </h2>
-      <p className="text-gray-400 text-center mb-4">
-        Enter your email address, and we'll send you a link to reset your password.
-      </p>
-
-      <input
-        type="email"
-        placeholder="Enter your email"
-        value={forgotEmail}
-        onChange={handleForgotEmailChange}
-        className="w-full p-3 bg-[#2d2d2d] border border-gray-600 text-white rounded-full focus:outline-none focus:ring-2 focus:ring-[#0070f3] transition duration-200 ease-in-out "
-      />
-
-      {/* Buttons */}
-      <div className="flex justify-between mt-6">
-        <Button 
-          onClick={handleForgotPassword} 
-          color="primary"
-          className="bg-[#0070f3] hover:bg-[#005bb5] text-white px-2 rounded-full transition duration-300 ease-in-out"
+        <div
+          aria-modal="true"
+          className="fixed inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center transition-opacity duration-300 ease-in-out"
+          role="dialog"
         >
-          Submit
-        </Button>
-        <Button 
-          onClick={toggleModal} 
-          className="bg-[#333333] hover:bg-[#444444] text-white px-2 rounded-full transition duration-300 ease-in-out"
-        >
-          Close
-        </Button>
-      </div>
+          {/* Modal Container */}
+          <div className="relative bg-[#1e1e1e] p-8 rounded-xl shadow-lg w-full max-w-md transform transition-transform duration-500 ease-in-out scale-100">
+            <h2 className="text-2xl font-bold text-white text-center mb-6">
+              Forgot Your Password?
+            </h2>
+            <p className="text-gray-400 text-center mb-4">
+              Enter your email address and take a link to reset your password
+              from your email.
+            </p>
 
-      {/* Close Button */}
-      <button
-        onClick={toggleModal}
-        className="absolute top-3 right-3 text-white text-lg font-bold hover:text-gray-400 transition duration-300 ease-in-out"
-      >
-        &times;
-      </button>
-    </div>
-  </div>
-)}
+            <input
+              className="w-full p-3 bg-[#2d2d2d] border border-gray-600 text-white rounded-full focus:outline-none focus:ring-2 focus:ring-[#0070f3] transition duration-200 ease-in-out"
+              placeholder="Enter your email"
+              type="email"
+              value={forgotEmail}
+              onChange={handleForgotEmailChange}
+            />
+
+            {/* Buttons */}
+            <div className="flex justify-between mt-6">
+              <Button
+                className="bg-[#0070f3] hover:bg-[#005bb5] text-white px-2 rounded-full transition duration-300 ease-in-out"
+                color="primary"
+                onClick={handleForgotPassword}
+              >
+                Submit
+              </Button>
+              <Button
+                className="bg-[#333333] hover:bg-[#444444] text-white px-2 rounded-full transition duration-300 ease-in-out"
+                onClick={toggleModal}
+              >
+                Close
+              </Button>
+            </div>
+
+            {/* Close Button */}
+            <button
+              aria-label="Close"
+              className="absolute top-3 right-3 text-white text-lg font-bold hover:text-gray-400 transition duration-300 ease-in-out"
+              tabIndex={0} // Make it focusable for keyboard interaction
+              onClick={toggleModal}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") toggleModal();
+              }}
+            >
+              &times;
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default LoginPage;
+// Wrap the LoginPage component in Suspense
+const WrappedLoginPage = () => (
+  <Suspense fallback={<div className="flex h-screen items-center justify-center"><p>Loading...</p></div>}>
+    <LoginPage />
+  </Suspense>
+);
+
+export default WrappedLoginPage;

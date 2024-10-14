@@ -1,8 +1,17 @@
 "use client";
 
-import { useState } from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
-import { IPost } from '@/src/types';
+import { useState } from "react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Input,
+} from "@nextui-org/react";
+
+import { IPost } from "@/src/types";
 
 interface UpdatePostModalProps {
   isOpen: boolean;
@@ -11,7 +20,12 @@ interface UpdatePostModalProps {
   onUpdate: (updatedPost: Partial<IPost>) => void;
 }
 
-export default function UpdatePostModal({ isOpen, onClose, post, onUpdate }: UpdatePostModalProps) {
+export default function UpdatePostModal({
+  isOpen,
+  onClose,
+  post,
+  onUpdate,
+}: UpdatePostModalProps) {
   // Keep a local state for the updated post details
   const [updatedPost, setUpdatedPost] = useState<Partial<IPost>>({
     title: post?.title,
@@ -21,6 +35,7 @@ export default function UpdatePostModal({ isOpen, onClose, post, onUpdate }: Upd
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
     setUpdatedPost((prev) => ({ ...prev, [name]: value })); // Only update the local state, not triggering the update yet
   };
 
@@ -29,35 +44,35 @@ export default function UpdatePostModal({ isOpen, onClose, post, onUpdate }: Upd
   };
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={onClose} placement="top-center">
+    <Modal isOpen={isOpen} placement="top-center" onOpenChange={onClose}>
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">Update Post</ModalHeader>
         <ModalBody>
           <Input
-            name="title"
             label="Title"
+            name="title"
             placeholder="Enter the title"
             value={updatedPost.title}
             onChange={handleInputChange}
           />
           <Input
-            name="category"
             label="Category"
+            name="category"
             placeholder="Enter the category"
             value={updatedPost.category}
             onChange={handleInputChange}
           />
           <Input
-            name="content"
+            className="mt-4"
             label="Content"
+            name="content"
             placeholder="Enter the content"
             value={updatedPost.content}
             onChange={handleInputChange}
-            className="mt-4"
           />
         </ModalBody>
         <ModalFooter>
-          <Button color="danger" variant="flat" size="sm" onPress={onClose}>
+          <Button color="danger" size="sm" variant="flat" onPress={onClose}>
             Close
           </Button>
           <Button color="primary" size="sm" onPress={handleSubmit}>

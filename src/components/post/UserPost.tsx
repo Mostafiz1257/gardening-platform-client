@@ -1,16 +1,19 @@
-"use client"
+"use client";
 import React from "react";
+
 import PostCard from "./PostCard";
 
-const UserPost = ({ posts, isLoading }) => {
+import { IPost } from "@/src/types";
+
+// eslint-disable-next-line prettier/prettier
+const UserPost = ({ posts, isLoading }:any) => {
   if (isLoading) return <p>Loading posts...</p>;
 
   return (
     <div>
       {posts?.length > 0 ? (
-        posts.map((post) => (
-          <PostCard key={post._id} post={post} />
-        ))
+        // eslint-disable-next-line prettier/prettier
+        posts.map((post:IPost) => <PostCard key={post._id} post={post} />)
       ) : (
         <p>No posts found.</p>
       )}

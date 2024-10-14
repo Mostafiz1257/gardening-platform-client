@@ -1,10 +1,9 @@
-"use server"
+"use server";
 
 import axios from "axios";
 import { cookies } from "next/headers";
+
 import { envConfig } from "../config/envConfig";
-
-
 
 const axiosInstance = axios.create({
   baseURL: envConfig.baseApi,
@@ -16,18 +15,18 @@ axiosInstance.interceptors.request.use(
     const accessToken = cokieStore.get("accessToken")?.value;
 
     if (accessToken) {
-        config.headers.Authorization = accessToken;
-      }
-  
-      if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`; // Add 'Bearer ' prefix
-      }
-  
-      return config;
-    },
-    function (error) {
-      return Promise.reject(error);
-    },
-  );
-  
-  export default axiosInstance;
+      config.headers.Authorization = accessToken;
+    }
+
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`; // Add 'Bearer ' prefix
+    }
+
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  },
+);
+
+export default axiosInstance;

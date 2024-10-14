@@ -1,38 +1,35 @@
 "use client";
 
-import { useUser } from "@/src/context/user.provider";
-import CreatePostModal from "@/src/modal/CreatePostModal";
-import { logout } from "@/src/services/authService";
 import { Avatar, Divider } from "@nextui-org/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import {
   FaHome,
-  FaSearch,
-  FaPaperPlane,
-  FaBell,
   FaCog,
   FaBars,
   FaPlus,
-  FaChartBar,
   FaSignOutAlt,
+  FaHeart,
   FaUserFriends,
-  FaEdit,
+  FaFileContract,
 } from "react-icons/fa";
+import { MdVerified } from "react-icons/md";
 import { RiVipCrownFill } from "react-icons/ri";
-import { RiAdminLine } from "react-icons/ri";
-import { MdManageAccounts } from "react-icons/md";
+import { FcAbout } from "react-icons/fc";
+
+import { logout } from "@/src/services/authService";
+import CreatePostModal from "@/src/modal/CreatePostModal";
+import { useUser } from "@/src/context/user.provider";
 import PremiumModal from "@/src/modal/PremiumModal";
 import { useGetUser } from "@/src/hooks/auth.hooks";
 
 const LeftSidebar = () => {
-  const {  setIsLoading } = useUser();
+  const { setIsLoading } = useUser();
   const { data } = useGetUser();
   const user = data?.data;
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
-  const [isAdminExpanded, setIsAdminExpanded] = useState(false); // Admin sub-options state
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const router = useRouter();
 
@@ -46,26 +43,18 @@ const LeftSidebar = () => {
     router.push("/login");
   };
 
-  // Function to open the modal
   const openModal = () => {
     setIsModalOpen(true);
   };
 
-  // Function to close the modal
   const closeModal = () => {
     setIsModalOpen(false);
-  };
-
-  // Toggle Admin Management sub-options
-  const toggleAdminOptions = () => {
-    setIsAdminExpanded(!isAdminExpanded);
   };
 
   const openPremiumModal = () => {
     setIsPremiumModalOpen(true);
   };
 
-  // Function to close the Premium Modal
   const closePremiumModal = () => {
     setIsPremiumModalOpen(false);
   };
@@ -73,10 +62,10 @@ const LeftSidebar = () => {
   return (
     <>
       <button
-        className='lg:hidden fixed top-4 left-4 z-50 p-2 bg-blue-600 rounded-full'
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-blue-600 rounded-full"
         onClick={toggleSidebar}
       >
-        <FaBars size={24} />
+        <FaBars className="text-blue-400" size={24} />
       </button>
 
       {/* Sidebar for large devices, toggle for small */}
@@ -85,109 +74,112 @@ const LeftSidebar = () => {
           isOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 lg:translate-x-0 w-64 z-40`}
       >
-        <ul className='gap-y-12'>
+        <ul className="gap-y-12">
           {user?.isPremium === false && (
-            <li
-              onClick={openPremiumModal}
-              className='flex items-center justify-center text-white pt-1 py-1 rounded bg-yellow-800  cursor-pointer'
-            >
-              <RiVipCrownFill size={20} />
-              <span className='ml-2'>Try Premium</span>
+            <li>
+              <button
+                className="flex items-center justify-center text-white pt-1 py-1 rounded bg-yellow-600 cursor-pointer px-2"
+                onClick={openPremiumModal}
+              >
+                <RiVipCrownFill size={20} />
+                <span className="ml-2">Try Premium</span>
+              </button>
             </li>
           )}
 
-          <li className='flex items-center space-x-4 hover:text-blue-600 cursor-pointer'>
-            <p className='text-5xl font-bold font-title text-blue-800'>
+          <li>
+            <p className="text-5xl font-bold font-title text-blue-800">
               EcoGrow
             </p>
           </li>
 
           <Link href={"/dashboard"}>
-            <li className='flex items-center pt-5 space-x-4 hover:text-blue-600 cursor-pointer'>
-              <FaHome size={20} />
-              <span>Home</span>
+            <li>
+              <button className="flex items-center pt-5 space-x-4 hover:text-blue-600 cursor-pointer">
+                <FaHome className="text-blue-400" size={20} />
+                <span>Home</span>
+              </button>
             </li>
           </Link>
-          <Link href={"/dashboard/search"}>
-            <li className='flex items-center pt-5 space-x-4 hover:text-blue-600 cursor-pointer'>
-              <FaSearch size={20} />
-              <span>Search</span>
+
+          <li>
+            <button
+              className="flex items-center pt-5 space-x-4 hover:text-blue-600 cursor-pointer"
+              onClick={openModal}
+            >
+              <FaPlus className="text-blue-400" size={20} />
+              <span>Create</span>
+            </button>
+          </li>
+
+          <Link href={"/dashboard/friend"}>
+            <li>
+              <button className="flex items-center pt-5 space-x-4 hover:text-blue-600 cursor-pointer">
+                <FaUserFriends className="text-blue-400" size={20} />
+                <span>Friends</span>
+              </button>
             </li>
           </Link>
-          <li
-            onClick={openModal}
-            className='flex items-center pt-5 space-x-4 hover:text-blue-600 cursor-pointer'
-          >
-            <FaPlus size={20} />
-            <span>Create</span>
-          </li>
-
-          {/* Admin Management */}
-          <li
-            className='flex items-center pt-5 space-x-4 hover:text-blue-600 cursor-pointer'
-            onClick={toggleAdminOptions}
-          >
-            <RiAdminLine size={20} />
-            <span>Admin Manage</span>
-          </li>
-
-          {isAdminExpanded && (
-            <ul className='pl-8 pt-2 space-y-2'>
-              <Link href={"/dashboard/admin/user-manage"}>
-                <li className='flex items-center space-x-4 hover:text-blue-600 cursor-pointer'>
-                  <MdManageAccounts size={20} />
-                  <span>User M.</span>
+          <Link href={"/dashboard/favorite"}>
+            <li>
+              <button className="flex items-center pt-5 space-x-4 hover:text-blue-600 cursor-pointer">
+                <FaHeart className="text-blue-400" size={20} />
+                <span>Favorite</span>
+              </button>
+            </li>
+          </Link>
+          {user?.role === "admin" && (
+            <>
+              <Link href={"/management/userManage"}>
+                <li>
+                  <button className="flex items-center pt-5  space-x-4 hover:text-blue-600 cursor-pointer">
+                    <FaCog className="text-blue-400" size={20} />
+                    <span>Admin Layout</span>
+                  </button>
                 </li>
               </Link>
-              <Link href={"/dashboard/admin/post-manage"}>
-                <li className='flex items-center space-x-4 hover:text-blue-600 cursor-pointer'>
-                  <FaEdit size={20} />
-                  <span>Post M.</span>
-                </li>
-              </Link>
-              <Link href={"/dashboard/admin/analysis"}>
-                <li className='flex items-center space-x-4 hover:text-blue-600 cursor-pointer'>
-                  <FaChartBar size={20} />
-                  <span>Analysis</span>
-                </li>
-              </Link>
-            </ul>
+            </>
           )}
 
-          <Link href={"/dashboard/following"}>
-            <li className='flex items-center pt-5 space-x-4 hover:text-blue-600 cursor-pointer'>
-              <FaBell size={20} />
-              <span>Following</span>
+          <Link href={"/dashboard/contact"}>
+            <li>
+              <button className="flex items-center pt-5 space-x-4 hover:text-blue-600 cursor-pointer">
+                <FaFileContract className="text-blue-400" size={20} />
+                <span>Contract </span>
+              </button>
             </li>
           </Link>
-          <Link href={"/dashboard/friend"}>
-            <li className='flex items-center pt-5 space-x-4 hover:text-blue-600 cursor-pointer'>
-              <FaUserFriends size={20} />
-              <span>Friends</span>
+          <Link href={"/dashboard/about"}>
+            <li>
+              <button className="flex items-center pt-5 space-x-4 hover:text-blue-600 cursor-pointer">
+                <FcAbout className="text-blue-400" size={20} />
+                <span>About us</span>
+              </button>
             </li>
           </Link>
-
-          <Link href={"/management/userManage"}>
-            <li className='flex items-center pt-5 py-4 space-x-4 hover:text-blue-600 cursor-pointer'>
-              <FaCog size={20} />
-              <span>Admin Layout</span>
-            </li>
-          </Link>
-
-          <Divider className='my-4' />
+          <Divider className="my-4" />
           <Link href={"/dashboard/profile"}>
-            <li className='flex items-center pt-3 space-x-4 hover:text-blue-600 cursor-pointer'>
-              <Avatar size='sm' src={user?.profileImage} />
-              <span>{"Profile"}</span>
+            <li>
+              <button className="flex items-center pt-3 space-x-4 hover:text-blue-600 cursor-pointer">
+                <Avatar size="sm" src={user?.profileImage} />
+                <span>{"Profile"}</span>
+                <span className='ml-3'>
+      {user?.isPremium && (
+        <MdVerified className='text-blue-700 ' />
+      )}
+    </span>
+              </button>
             </li>
           </Link>
 
-          <li
-            onClick={handleLogOut}
-            className='flex items-center pt-3 space-x-4 hover:text-blue-600 cursor-pointer'
-          >
-            <FaSignOutAlt size={20} />
-            <span>Logout</span>
+          <li>
+            <button
+              className="flex items-center pt-3 space-x-4 hover:text-blue-600 cursor-pointer"
+              onClick={handleLogOut}
+            >
+              <FaSignOutAlt className="text-blue-400" size={20} />
+              <span>Logout</span>
+            </button>
           </li>
         </ul>
       </aside>
@@ -195,8 +187,11 @@ const LeftSidebar = () => {
       {/* Overlay for small devices */}
       {isOpen && (
         <div
-          className='fixed inset-0 bg-black opacity-50 z-30'
+          className="fixed inset-0 bg-black opacity-50 z-30"
+          role="button"
+          tabIndex={0} // Make the overlay focusable
           onClick={toggleSidebar}
+          onKeyDown={(e) => e.key === "Enter" && toggleSidebar()} // Handle keyboard interaction
         />
       )}
 

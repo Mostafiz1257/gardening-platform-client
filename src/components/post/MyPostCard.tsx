@@ -1,14 +1,16 @@
-"use client";
-
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Image } from "@nextui-org/react";
-import { IPost } from '@/src/types';
-import { useState } from 'react';
-import UpdatePostModal from '@/src/modal/UpdatePostModal';
-import DeletePostModal from '@/src/modal/DeletePostModal';
-import { useDeletePostMutation, useUpdatePostMutation } from '@/src/redux/features/post';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { toast } from "sonner";
+
+import { IPost } from "@/src/types";
+import UpdatePostModal from "@/src/modal/UpdatePostModal";
+import DeletePostModal from "@/src/modal/DeletePostModal";
+import {
+  useDeletePostMutation,
+  useUpdatePostMutation,
+} from "@/src/redux/features/post";
 
 const MyPostCard = ({ singlePost }: { singlePost: IPost }) => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -22,35 +24,39 @@ const MyPostCard = ({ singlePost }: { singlePost: IPost }) => {
   const handleDelete = async () => {
     try {
       await deletePost(singlePost._id).unwrap(); // Call the delete mutation with the post ID
-      toast.success('Post deleted successfully');
+      toast.success("Post deleted successfully");
       setIsDeleteModalOpen(false);
     } catch (error) {
-      toast.error('Error deleting post');
+      toast.error("Error deleting post");
     }
   };
 
   // Handle post update
   const handleUpdate = async (updatedPost: Partial<IPost>) => {
     try {
-      await updatePost({ postId: singlePost._id, updateData: updatedPost }).unwrap();
-      toast.success('Post updated successfully');
+      await updatePost({
+        postId: singlePost._id,
+        updateData: updatedPost,
+      }).unwrap();
+      toast.success("Post updated successfully");
       setIsUpdateModalOpen(false);
     } catch (error) {
-      toast.error('Error updating post');
+      toast.error("Error updating post");
     }
   };
 
   return (
     <div>
       <Card className="w-full my-4">
-        <CardHeader className="justify-between"></CardHeader>
+        <CardHeader className="justify-between" />
         <CardBody className="px-2 py-0 text-small text-default-400">
-          {singlePost?.image.length > 0 && (
+          {/* Check if image is an array and has elements */}
+          {Array.isArray(singlePost?.image) && singlePost.image.length > 0 && (
             <Image
               removeWrapper
               alt="Post image"
               className="z-0 w-full h-[300px] object-cover"
-              src={singlePost?.image[0]}
+              src={singlePost.image[0]} // Access the first image
             />
           )}
           <p className="font-bold pt-2 text-blue-700">{singlePost?.title}</p>
@@ -58,18 +64,18 @@ const MyPostCard = ({ singlePost }: { singlePost: IPost }) => {
           <p className="my-4">{singlePost?.content}</p>
         </CardBody>
         <CardFooter className="gap-3 flex ">
-          <Button 
-            color="primary" 
-            variant="shadow" 
-            className="rounded-full px-1 h-[25px]" 
+          <Button
+            className="rounded-full px-1 h-[25px]"
+            color="primary"
+            variant="shadow"
             onPress={() => setIsUpdateModalOpen(true)}
           >
             Edit
           </Button>
-          <Button 
-            color="danger" 
-            variant="shadow" 
+          <Button
             className="rounded-full px-1 h-[25px]"
+            color="danger"
+            variant="shadow"
             onPress={() => setIsDeleteModalOpen(true)}
           >
             Delete
@@ -81,17 +87,17 @@ const MyPostCard = ({ singlePost }: { singlePost: IPost }) => {
       {isUpdateModalOpen && (
         <UpdatePostModal
           isOpen={isUpdateModalOpen}
-          onClose={() => setIsUpdateModalOpen(false)}
           post={singlePost} // Pass the single post to the modal
+          onClose={() => setIsUpdateModalOpen(false)}
           onUpdate={handleUpdate} // Pass the update handler
         />
       )}
 
       {/* Delete Modal */}
       {isDeleteModalOpen && (
-        <DeletePostModal 
+        <DeletePostModal
           isOpen={isDeleteModalOpen}
-          onClose={() => setIsDeleteModalOpen(false)} 
+          onClose={() => setIsDeleteModalOpen(false)}
           onDelete={handleDelete} // Pass the delete handler
         />
       )}

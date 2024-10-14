@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import { Bar, Pie } from "react-chartjs-2";
 import {
@@ -10,10 +10,19 @@ import {
   Title,
   Tooltip,
   Legend,
+  ChartOptions, // Import ChartOptions type
 } from "chart.js";
 
 // Register necessary Chart.js components
-ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 const AnalysisPage = () => {
   // Data for User Analysis Bar Chart
@@ -42,7 +51,7 @@ const AnalysisPage = () => {
   };
 
   // Chart options
-  const barOptions = {
+  const barOptions: ChartOptions<"bar"> = {
     responsive: true,
     plugins: {
       legend: {
@@ -55,7 +64,7 @@ const AnalysisPage = () => {
     },
   };
 
-  const pieOptions = {
+  const pieOptions: ChartOptions<"pie"> = {
     responsive: true,
     plugins: {
       legend: {

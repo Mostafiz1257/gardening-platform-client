@@ -1,6 +1,13 @@
 "use client";
 
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+} from "@nextui-org/react";
 
 interface DeletePostModalProps {
   isOpen: boolean;
@@ -8,16 +15,21 @@ interface DeletePostModalProps {
   onDelete: () => void;
 }
 
-export default function DeletePostModal({ isOpen, onClose, onDelete }: DeletePostModalProps) {
+export default function DeletePostModal({
+  isOpen,
+  onClose,
+  onDelete,
+}: DeletePostModalProps) {
   return (
-    <Modal isOpen={isOpen} onOpenChange={onClose} placement="top-center">
+    <Modal isOpen={isOpen} placement="top-center" onOpenChange={onClose}>
       <ModalContent>
         <ModalHeader>Confirm Deletion</ModalHeader>
         <ModalBody>
-          Are you sure you want to delete this post? This action cannot be undone.
+          Are you sure you want to delete this post? This action cannot be
+          undone.
         </ModalBody>
         <ModalFooter>
-          <Button color="danger" variant="flat" size="sm" onPress={onClose}>
+          <Button color="danger" size="sm" variant="flat" onPress={onClose}>
             Cancel
           </Button>
           <Button color="primary" size="sm" onPress={onDelete}>

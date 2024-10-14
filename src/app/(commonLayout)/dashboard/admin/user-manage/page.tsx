@@ -1,85 +1,131 @@
-"use client";
-import { useGetAllUserQuery } from "@/src/redux/features/user";
+"use client"
 import React from "react";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, User, Chip, Tooltip } from "@nextui-org/react";
-// import { EditIcon } from "./EditIcon";
-// import { DeleteIcon } from "./DeleteIcon";
-// import { EyeIcon } from "./EyeIcon";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  User,
+  Chip,
+  Tooltip,
+} from "@nextui-org/react";
 
-const statusColorMap = {
+import { useGetAllUserQuery } from "@/src/redux/features/user";
+
+// Define User type
+interface IUser {
+  _id: string;
+  name: string;
+  email: string;
+  role: "user" | "admin"; // If there are other roles, add them here
+  profileImage: string;
+}
+
+// Define a type for the valid colors
+type ChipColor =
+  | "default"
+  | "success"
+  | "primary"
+  | "secondary"
+  | "warning"
+  | "danger";
+
+// Mapping roles to colors
+const statusColorMap: Record<IUser["role"], ChipColor> = {
   user: "default",
   admin: "success",
 };
 
-const UserManagement = () => {
+const UserManagement: React.FC = () => {
   const { data } = useGetAllUserQuery({});
-  const allUsers = data?.data || [];
+  const allUsers: IUser[] = data?.data || [];
 
-  const renderCell = (user, columnKey) => {
+  // Render cell content based on column
+  const renderCell = (user: IUser, columnKey: keyof IUser | "actions") => {
+    // Check if columnKey is 'actions' first to avoid type error
+    if (columnKey === "actions") {
+      return (
+        <div className="relative flex items-center gap-2">
+          <Tooltip content="Details">
+            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+              {/* Add icon here for Details */}
+            </span>
+          </Tooltip>
+          <Tooltip content="Edit user">
+            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+              {/* Add icon here for Edit */}
+            </span>
+          </Tooltip>
+          <Tooltip color="danger" content="Delete user">
+            <span className="text-lg text-danger cursor-pointer active:opacity-50">
+              {/* Add icon here for Delete */}
+            </span>
+          </Tooltip>
+        </div>
+      );
+    }
+
+    // For other keys, access the property normally
     const cellValue = user[columnKey];
-    
+
     switch (columnKey) {
       case "name":
         return (
           <User
             avatarProps={{ radius: "lg", src: user.profileImage }}
             description={user.email}
-            name={cellValue}
+            name={user.name}
           />
         );
       case "role":
         return (
-          <Chip className="capitalize" color={statusColorMap[user.role] || "default"} size="sm" variant="flat">
-            {cellValue}
+          <Chip
+            className="capitalize"
+            color={statusColorMap[user.role]} // This guarantees the correct type
+            size="sm"
+            variant="flat"
+          >
+            {user.role}
           </Chip>
         );
-      case "actions":
-        return (
-          <div className="relative flex items-center gap-2">
-            <Tooltip content="Details">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                {/* <EyeIcon /> */}
-              </span>
-            </Tooltip>
-            <Tooltip content="Edit user">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                {/* <EditIcon /> */}
-              </span>
-            </Tooltip>
-            <Tooltip color="danger" content="Delete user">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                {/* <DeleteIcon /> */}
-              </span>
-            </Tooltip>
-          </div>
-        );
+      case "email":
+        return cellValue; // For the email, return it directly
       default:
-        return cellValue;
+        return cellValue; // Fallback
     }
   };
 
+  // Define the table columns
   const columns = [
     { name: "NAME", uid: "name" },
     { name: "ROLE", uid: "role" },
     { name: "EMAIL", uid: "email" },
-   
+    { name: "ACTIONS", uid: "actions" },
   ];
 
   return (
     <div>
-   
       <Table aria-label="User management table">
         <TableHeader columns={columns}>
           {(column) => (
-            <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
+            <TableColumn
+              key={column.uid}
+              align={column.uid === "actions" ? "center" : "start"}
+            >
               {column.name}
             </TableColumn>
           )}
         </TableHeader>
         <TableBody items={allUsers}>
-          {(user) => (
+          {(user: IUser) => (
             <TableRow key={user._id}>
-              {(columnKey) => <TableCell>{renderCell(user, columnKey)}</TableCell>}
+              {(columnKey) => (
+                <TableCell>
+                  {renderCell(user, columnKey as keyof IUser | "actions")}
+                </TableCell>
+              )}
             </TableRow>
           )}
         </TableBody>

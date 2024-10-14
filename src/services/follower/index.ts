@@ -1,5 +1,6 @@
-import { envConfig } from "@/src/config/envConfig";
 import axios from "axios";
+
+import { envConfig } from "@/src/config/envConfig";
 
 interface FollowParams {
   userId: string;
@@ -20,15 +21,16 @@ export const makeFollow = async ({
     {
       userId,
       followUserId,
-    }
+    },
   );
+
   return res.data;
 };
 
-
 export const getFollowingUsers = async (userId: string) => {
-    const res = await axios.get(`${envConfig.baseApi}/auth/users/following`, {
-        params: { userId }, // Pass userId as query parameter
-    });
-    return res.data; 
+  const res = await axios.get(`${envConfig.baseApi}/auth/users/following`, {
+    params: { userId }, // Pass userId as query parameter
+  });
+
+  return res.data;
 };

@@ -48,18 +48,16 @@ const postApi = baseApi.injectEndpoints({
     }),
     createLike: builder.mutation({
       query: (likeObject) => {
-        console.log("Sending like object to API:", likeObject);
         return {
           url: `/likes`,
           method: "POST",
           body: likeObject,
         };
       },
-      invalidatesTags: ["post", "user", "like", "disLike"], 
+      invalidatesTags: ["post", "user", "like", "disLike"],
     }),
     createDislike: builder.mutation({
       query: (disLikes) => {
-        console.log("Sending like object to API:", disLikes);
         return {
           url: `/dislikes`,
           method: "POST",
@@ -69,15 +67,22 @@ const postApi = baseApi.injectEndpoints({
       invalidatesTags: ["post", "user"],
     }),
     makeFavorite: builder.mutation({
-      query: ({ saveData }) => {
-        console.log("Saving post data:", saveData); 
+      query: ( saveData ) => {
         return {
           url: `/post/favorite/create-favorite`,
           method: "POST",
-          body: saveData, 
+          body: saveData,
         };
       },
-      invalidatesTags: ["post","user"],
+      invalidatesTags: ["post", "user"],
+    }),
+    getMyFavoritePost: builder.query({
+      query: (userId) => {
+        return {
+          url: `post/favorite/${userId}`,
+          method: "GET",
+        };
+      },
     }),
   }),
 });
@@ -90,5 +95,6 @@ export const {
   useGetMyPostsQuery,
   useCreateLikeMutation,
   useCreateDislikeMutation,
-  useMakeFavoriteMutation
+  useMakeFavoriteMutation,
+  useGetMyFavoritePostQuery,
 } = postApi;

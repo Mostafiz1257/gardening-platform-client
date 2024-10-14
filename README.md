@@ -1,53 +1,70 @@
-# Next.js & NextUI Template
+# Gardening Tips & Advice Platform - Frontend
 
-This is a template for creating applications using Next.js 14 (app directory) and NextUI (v2).
+## Project Overview
+The Gardening Tips & Advice Platform is designed for gardening enthusiasts and professionals to share, discover, and engage with gardening tips and techniques. The frontend is built with **Next.js**, **TypeScript**, and other modern technologies, providing a seamless, interactive user experience.
 
-[Try it on CodeSandbox](https://githubbox.com/nextui-org/next-app-template)
+### Features
+- User authentication and profile management
+- Post creation and editing with a rich text editor
+- Upvote/downvote system for posts
+- Commenting and following functionality
+- Premium content access through payment integration (Aamarpay/Stripe)
+- Dynamic news feed with infinite scroll and search/filter functionality
+- Admin dashboard to manage users, posts, payments, and community moderation
 
-## Technologies Used
+### Tech Stack
+- **Next.js**: Framework for React-based frontends
+- **TypeScript**: For type-safe JavaScript
+- **Tailwind CSS**: Utility-first CSS framework for responsive design
+- **React Query/Redux**: State management and data fetching
+- **Stripe API**: Payment integration for premium content
+- **Froala/Quill/Draft.js/Slate**: Rich text editor for posts
+- **React Router**: Routing within the application
+- **React Icons**: Icons for enhanced visuals
 
-- [Next.js 14](https://nextjs.org/docs/getting-started)
-- [NextUI v2](https://nextui.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [next-themes](https://github.com/pacocoursey/next-themes)
+---
 
-## How to Use
+## Getting Started
 
-### Use the template with create-next-app
+### Prerequisites
+Ensure that you have the following installed:
+- Node.js (v14 or later)
+- npm or yarn
 
-To create a new project based on this template using `create-next-app`, run the following command:
+### Installation
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/your-username/gardening-platform-frontend.git
+    cd gardening-platform-frontend
+    ```
+
+2. Install dependencies:
+
+    ```bash
+    npm install
+    ```
+
+3. Create a `.env.local` file in the root of the project and add your environment variables:
+
+    ```bash
+    NEXT_PUBLIC_API_URL=http://localhost:5000/api
+    NEXT_PUBLIC_STRIPE_KEY=your-stripe-public-key
+    ```
+
+4. Run the development server:
+
+    ```bash
+    npm run dev
+    ```
+
+    Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Building for Production
+
+To create an optimized production build:
 
 ```bash
-npx create-next-app -e https://github.com/nextui-org/next-app-template
-```
-
-### Install dependencies
-
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
-
-```bash
-npm install
-```
-
-### Run the development server
-
-```bash
-npm run dev
-```
-
-### Setup pnpm (optional)
-
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
-
-```bash
-public-hoist-pattern[]=*@nextui-org/*
-```
-
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
-
-## License
-
-Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
+npm run build
+npm start

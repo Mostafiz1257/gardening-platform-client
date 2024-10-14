@@ -5,5 +5,5 @@ export const registerValidationSchema = z.object({
   password: z.string().trim().min(5, "Password need at least 5 characters"),
   mobileNumber: z.string().min(5, "Enter your number"),
   name: z.string().trim().min(1, "Enter your name"),
-  profilePhoto:z.string()
+  profilePhoto: z.string(),
 });

@@ -9,18 +9,20 @@ import {
   Button,
   Input,
 } from "@nextui-org/react";
-import { GiSelfLove } from "react-icons/gi";
-import { useUser } from "@/src/context/user.provider";
+import { GiPlateClaw, GiSelfLove } from "react-icons/gi";
+import { RiVipCrownFill } from "react-icons/ri";
 import { MdVerified } from "react-icons/md";
-import { FaShare, FaComment, FaBookmark } from "react-icons/fa";
+import { FaShare, FaComment } from "react-icons/fa";
 import { SlLike, SlDislike } from "react-icons/sl";
 import { BiSolidLike, BiSolidDislike } from "react-icons/bi";
+import { toast } from "sonner";
+import Link from "next/link";
+
 import {
   useCreateDislikeMutation,
   useCreateLikeMutation,
   useMakeFavoriteMutation,
 } from "@/src/redux/features/post";
-import { toast } from "sonner";
 import { useGetUser } from "@/src/hooks/auth.hooks";
 import { useFollowUserMutation } from "@/src/redux/features/user";
 import {
@@ -28,17 +30,20 @@ import {
   useDeleteCommentMutation,
   useUpdateCommentMutation,
 } from "@/src/redux/features/commentApi";
-import Link from "next/link";
+import { useUser } from "@/src/context/user.provider";
+import PremiumModal from "@/src/modal/PremiumModal";
 
-const PostCard = ({ post }) => {
+// eslint-disable-next-line prettier/prettier
+const PostCard = ({ post }: any) => {
   // console.log("post",post);
   const { user } = useUser();
   const { data: newData, refetch: refetchUserData } = useGetUser();
+  console.log("new new data", newData);
   const userId = newData?.data?._id;
   const [createLike] = useCreateLikeMutation();
   const [createDislike] = useCreateDislikeMutation();
   const [followUser] = useFollowUserMutation();
-const [makeFavorite] = useMakeFavoriteMutation()
+  const [makeFavorite] = useMakeFavoriteMutation();
 
   const [createComment] = useCreateCommentMutation();
   const [updateComment] = useUpdateCommentMutation();
@@ -56,24 +61,33 @@ const [makeFavorite] = useMakeFavoriteMutation()
   const [likes, setLikes] = useState(post?.likes || []);
   const [dislikes, setDislikes] = useState(post?.dislikes || []);
 
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+  const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+  const openPremiumModal = () => {
+    setIsPremiumModalOpen(true);
+  };
+  const closePremiumModal = () => {
+    setIsPremiumModalOpen(false);
+  };
+
   // Effect to set the initial status based on post data
   useEffect(() => {
-    if (post?.likes?.some((like) => like?.user?._id === userId)) {
+    // eslint-disable-next-line prettier/prettier
+    if (post?.likes?.some((like: any) => like?.user?._id === userId)) {
       setIsLiked(true);
     }
-    if (post?.dislikes?.some((dislike) => dislike?.user?._id === userId)) {
+    // eslint-disable-next-line prettier/prettier
+    if (post?.dislikes?.some((dislike: any) => dislike?.user?._id === userId)) {
       setIsDisliked(true);
     }
   }, [post, userId]);
 
-
-  const handleSavePost = async (post: any) => {
+  const handleSavePost = async (post: string) => {
     try {
-     
-      // Create the saveData object with post and user ID
       const saveData = { post, user: userId };
-      const res = await makeFavorite({ saveData }).unwrap(); // Pass saveData to savePost
-      console.log(res);
+      console.log("saveData", saveData);
+
+      const res = await makeFavorite(saveData).unwrap();
       toast.success(res?.message);
     } catch (error: any) {
       console.log(error);
@@ -85,6 +99,7 @@ const [makeFavorite] = useMakeFavoriteMutation()
     try {
       const followInfo = { followerId: userId, followeeId };
       const res = await followUser({ followInfo }).unwrap();
+
       await refetchUserData();
       toast.success(res?.message);
     } catch (error: any) {
@@ -99,11 +114,13 @@ const [makeFavorite] = useMakeFavoriteMutation()
       // If the post is already liked, unlike it
       if (isLiked) {
         setIsLiked(false);
-        setLikes(likes.filter((like) => like?.user?._id !== userId));
+        // eslint-disable-next-line prettier/prettier
+        setLikes(likes.filter((like: any) => like?.user?._id !== userId));
         toast.success("You unliked it");
       } else {
         // Like the post
         const res = await createLike(likeObject).unwrap();
+
         setIsLiked(true);
         setIsDisliked(false); // Remove dislike if it was set
         setLikes([...likes, { user: { _id: userId } }]);
@@ -111,7 +128,8 @@ const [makeFavorite] = useMakeFavoriteMutation()
         // If it was previously disliked, remove that dislike
         if (isDisliked) {
           setDislikes(
-            dislikes.filter((dislike) => dislike?.user?._id !== userId)
+            // eslint-disable-next-line prettier/prettier
+            dislikes.filter((dislike: any) => dislike?.user?._id !== userId)
           );
         }
 
@@ -131,19 +149,22 @@ const [makeFavorite] = useMakeFavoriteMutation()
       if (isDisliked) {
         setIsDisliked(false);
         setDislikes(
-          dislikes.filter((dislike) => dislike?.user?._id !== userId)
+          // eslint-disable-next-line prettier/prettier
+          dislikes.filter((dislike: any) => dislike?.user?._id !== userId)
         );
-        toast.success("You undisliked it");
+        toast.success("You unDisliked it");
       } else {
         // Dislike the post
         const res = await createDislike(dislikeObject).unwrap();
+
         setIsDisliked(true);
         setIsLiked(false); // Remove like if it was set
         setDislikes([...dislikes, { user: { _id: userId } }]);
 
         // If it was previously liked, remove that like
         if (isLiked) {
-          setLikes(likes.filter((like) => like?.user?._id !== userId));
+          // eslint-disable-next-line prettier/prettier
+          setLikes(likes.filter((like: any) => like?.user?._id !== userId));
         }
 
         toast.success("You disliked it");
@@ -165,6 +186,7 @@ const [makeFavorite] = useMakeFavoriteMutation()
         commentObject,
         postId,
       }).unwrap();
+
       console.log("new commensts", newComment);
       setComments([...comments, newComment]);
 
@@ -176,8 +198,6 @@ const [makeFavorite] = useMakeFavoriteMutation()
     }
   };
 
-
-
   const handleUpdateComment = async (commentId: string) => {
     if (!editingText.trim()) return;
 
@@ -188,8 +208,10 @@ const [makeFavorite] = useMakeFavoriteMutation()
         commentText: editingText,
       };
       const updatedComment = await updateComment(updateObject).unwrap();
+
       setComments(
-        comments.map((comment) =>
+        // eslint-disable-next-line prettier/prettier
+        comments.map((comment: any) =>
           comment._id === commentId ? updatedComment : comment
         )
       );
@@ -204,7 +226,8 @@ const [makeFavorite] = useMakeFavoriteMutation()
   const handleDeleteComment = async (commentId: string) => {
     try {
       await deleteComment({ authorId: userId, commentId }).unwrap();
-      setComments(comments.filter((comment) => comment._id !== commentId));
+      // eslint-disable-next-line prettier/prettier
+      setComments(comments.filter((comment: any) => comment._id !== commentId));
       toast.success("Comment deleted!");
     } catch (error) {
       toast.error("Failed to delete comment");
@@ -222,14 +245,50 @@ const [makeFavorite] = useMakeFavoriteMutation()
             size='md'
             src={post?.userId?.profileImage}
           />
-          <div className='flex flex-col gap-1 items-start justify-center'>
+          {/* <div className='flex flex-col gap-1 items-start justify-center'>
             <div className='flex'>
               
-              <Link href={`/dashboard/user/${post?.userId._id}`} className='text-small font-semibold leading-none text-default-600'>
+              <Link
+                className='text-small font-semibold leading-none text-default-600'
+                href={`/dashboard/user/${post?.userId._id}`}
+              >
                 {post?.userId?.name}
-              </Link >
+              </Link>
+
               <span className='ml-3'>
-                {post?.userId?.isPremium === false && (
+                {post?.userId?.isPremium && (
+                  <MdVerified className='text-blue-700 ' />
+                )}
+              </span>
+            </div>
+            <h5 className='text-small tracking-tight text-default-400'>
+              {post?.userId?.email}
+            </h5>
+          </div> */}
+
+          <div className='flex flex-col gap-1 items-start justify-center'>
+            <div className='flex'>
+              {newData?.data?.isPremium ? ( // Check if current user is premium and matches post user
+                <Link
+                  className='text-small font-semibold leading-none text-default-600'
+                  href={`/dashboard/user/${post?.userId._id}`} // Render link for premium user
+                >
+                  {post?.userId?.name}
+                </Link>
+              ) : (
+                <span
+                className='text-small font-semibold leading-none text-default-600 cursor-pointer'
+                onClick={openPremiumModal}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') openPremiumModal(); }}
+              >
+                {post?.userId?.name}
+              </span>
+              )}
+
+              <span className='ml-3'>
+                {post?.userId?.isPremium && (
                   <MdVerified className='text-blue-700 ' />
                 )}
               </span>
@@ -239,13 +298,14 @@ const [makeFavorite] = useMakeFavoriteMutation()
             </h5>
           </div>
         </div>
+
         <Button
+          className='h-[30px] md:px-5'
           color='primary'
           radius='full'
           size='sm'
           variant='shadow'
           onClick={() => handleFollowUser(post?.userId?._id)}
-          className='h-[30px] md:px-5'
         >
           {newData?.data?.following?.some(
             (follower: any) => follower === post?.userId?._id
@@ -267,6 +327,9 @@ const [makeFavorite] = useMakeFavoriteMutation()
           </div>
         )}
         <p className='font-bold pt-2 text-blue-700'>#{post?.category}</p>
+        <p className='text-right '>
+          <RiVipCrownFill className=' text-2xl text-yellow-500  bg-pink-600 rounded-full' />
+        </p>
         <p className='py-2 font-medium'>{post?.content}</p>
       </CardBody>
 
@@ -274,15 +337,16 @@ const [makeFavorite] = useMakeFavoriteMutation()
       <div className='comments-section px-2 py-2 border-t border-gray-800'>
         <p className='text-sm'>Comments:</p>
         {post?.comments.length > 0 ? (
-         post?.comments?.map((comment) => (
+          // eslint-disable-next-line prettier/prettier
+          post?.comments?.map((comment: any) => (
             <div key={comment?._id} className='text-gray-400 rounded '>
               <div className='flex justify-between text-sm my-1'>
                 <div className='flex justify-center items-center gap-3 my-1'>
                   <Avatar
                     isBordered
+                    className='h-[20px] w-[20px]'
                     radius='full'
                     size='sm'
-                    className='h-[20px] w-[20px]'
                     src={comment?.author?.profileImage}
                   />
                   <span>{comment?.commentText || "Anonymous"}</span>
@@ -291,18 +355,18 @@ const [makeFavorite] = useMakeFavoriteMutation()
                   {userId === comment?.author?._id && (
                     <>
                       <Button
+                        className='h-[20px] rounded-full '
                         size='sm'
                         variant='flat'
-                        className='h-[20px] rounded-full '
                         onClick={() => setEditingCommentId(comment?._id)}
                       >
                         Edit
                       </Button>
                       <Button
+                        className='h-[20px] rounded-full'
+                        color='danger'
                         size='sm'
                         variant='flat'
-                        color='danger'
-                        className='h-[20px] rounded-full'
                         onClick={() => handleDeleteComment(comment?._id)}
                       >
                         Delete
@@ -314,9 +378,9 @@ const [makeFavorite] = useMakeFavoriteMutation()
               {editingCommentId === comment?._id ? (
                 <div className='flex flex-col gap-2'>
                   <Input
+                    placeholder='Edit comment...'
                     value={editingText}
                     onChange={(e) => setEditingText(e.target.value)}
-                    placeholder='Edit comment...'
                   />
                   <Button
                     size='sm'
@@ -340,16 +404,16 @@ const [makeFavorite] = useMakeFavoriteMutation()
       {/* Comment input box */}
       <CardFooter className='flex items-center justify-between '>
         <Input
+          className='w-3/4  flex justify-center rounded-full '
           placeholder='Write a comment...'
           value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
-          className='w-3/4  flex justify-center rounded-full '
         />
         <Button
-          size='sm'
-          color='primary'
-          onClick={() => handleCreateComment(post?._id)}
           className='ml-2 rounded-full text-white'
+          color='primary'
+          size='sm'
+          onClick={() => handleCreateComment(post?._id)}
         >
           Post
         </Button>
@@ -358,14 +422,14 @@ const [makeFavorite] = useMakeFavoriteMutation()
       <CardFooter className='flex justify-between border-t border-gray-700'>
         <div className='flex gap-4'>
           <button
-            onClick={() => handleLikePost(post?._id)}
             className='text-large text-default-500'
+            onClick={() => handleLikePost(post?._id)}
           >
             {isLiked ? <BiSolidLike /> : <SlLike />} {likes?.length}
           </button>
           <button
-            onClick={() => handleDislikePost(post?._id)}
             className='text-large text-default-500'
+            onClick={() => handleDislikePost(post?._id)}
           >
             {isDisliked ? <BiSolidDislike /> : <SlDislike />} {dislikes?.length}
           </button>
@@ -374,19 +438,40 @@ const [makeFavorite] = useMakeFavoriteMutation()
             {post?.comments?.length}
           </button>
         </div>
-        <div className='flex'>
-          <button className='text-large text-default-500'>
-          <div 
-           onClick={() => handleSavePost(post?._id)}
-          className="flex items-center">
-            <GiSelfLove className="text-2xl" /> 
-          </div>
+        {/* <div className="flex">
+          <button className="text-large text-default-500">
+            <div
+              className="flex items-center"
+              onClick={() => handleSavePost(post?._id)}
+            >
+              <GiSelfLove className="text-2xl" />
+            </div>
           </button>
+          <button className="ml-3 text-large text-default-500">
+            <FaShare />
+          </button>
+        </div> */}
+        <div className='flex'>
+          {/* Like Button */}
+          <button className='text-large text-default-500'>
+            <div
+              className='flex items-center'
+              role='button' // Add role to indicate it's a button
+              tabIndex={0} // Make the element focusable
+              onClick={() => handleSavePost(post?._id)}
+              onKeyDown={(e) => e.key === "Enter" && handleSavePost(post?._id)} // Handle keyboard interaction
+            >
+              <GiSelfLove className='text-2xl' />
+            </div>
+          </button>
+
+          {/* Share Button */}
           <button className='ml-3 text-large text-default-500'>
             <FaShare />
           </button>
         </div>
       </CardFooter>
+      <PremiumModal isOpen={isPremiumModalOpen} onClose={closePremiumModal} />
     </Card>
   );
 };

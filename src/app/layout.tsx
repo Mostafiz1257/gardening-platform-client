@@ -1,17 +1,14 @@
 import "@/src/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Link } from "@nextui-org/link";
 import clsx from "clsx";
 
 import { Providers } from "./providers";
 
-
 import { fontSans } from "@/src/config/fonts";
-import { Navbar } from "@/src/components/navbar";
 
 export const metadata: Metadata = {
-  title:"Garden",
-  description:"Gardening platform",
+  title: "Garden",
+  description: "Gardening platform",
   icons: {
     icon: "/favicon.ico",
   },
@@ -41,11 +38,10 @@ export default function RootLayout({
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <div className="relative flex flex-col h-screen">
             {/* <Navbar /> */}
-       
+
             <main className="container mx-auto max-w-7xl pt-5  flex-grow px-2">
               {children}
             </main>
-          
           </div>
         </Providers>
       </body>

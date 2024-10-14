@@ -1,17 +1,24 @@
 "use client";
-import { useDeleteCommentMutation } from "@/src/redux/features/commentApi";
-import { useGetAllUserQuery } from "@/src/redux/features/user";
 import React from "react";
 import { FiTrash2 } from "react-icons/fi"; // Importing delete icon from React Icons
+
+import {
+  useDeleteUserMutation,
+  useGetAllUserQuery,
+} from "@/src/redux/features/user";
+
+import { IUser } from "@/src/types";
 import { toast } from "sonner";
 
 const UserManage = () => {
   const { data, refetch } = useGetAllUserQuery({});
-  const [deleteUser] = useDeleteCommentMutation();
+  const [deleteUser] = useDeleteUserMutation();
   const allUsers = data?.data || [];
 
-  const handleDelete = (userId: string) => {
-    deleteUser(userId);
+  const handleDelete = async (userId: string) => {
+    console.log(userId);
+    const res = await deleteUser({});
+    toast.success("Account Deleted");
     refetch();
   };
 
@@ -29,13 +36,13 @@ const UserManage = () => {
           </tr>
         </thead>
         <tbody>
-          {allUsers?.map((user) => (
+          {allUsers?.map((user: IUser) => (
             <tr key={user._id} className='border-b '>
               <td className='py-1 px-4'>
                 <img
-                  src={user.profileImage}
                   alt={user.name}
                   className='w-12 h-12 rounded-full object-cover'
+                  src={user.profileImage}
                 />
               </td>
               <td className='py-2 px-4'>{user.name}</td>
@@ -43,8 +50,8 @@ const UserManage = () => {
               <td className='py-2 px-4 capitalize'>{user.role}</td>
               <td className='py-2 px-4'>
                 <button
-                  onClick={() => handleDelete(user._id)}
                   className='text-red-600 hover:text-red-800'
+                  onClick={() => handleDelete(user._id)}
                 >
                   <FiTrash2 className='w-6 h-6' />
                 </button>

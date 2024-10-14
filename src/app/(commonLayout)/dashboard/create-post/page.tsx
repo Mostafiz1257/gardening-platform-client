@@ -1,8 +1,9 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
 import axios from "axios";
+
 import { createPost } from "@/src/services/post";
 import { useUser } from "@/src/context/user.provider";
 
@@ -13,7 +14,7 @@ interface FormDataType {
 }
 
 const CreatePost: React.FC = () => {
-  const {user} = useUser()
+  const { user } = useUser();
   const [formData, setFormData] = useState<FormDataType>({
     title: "",
     category: "",
@@ -21,20 +22,23 @@ const CreatePost: React.FC = () => {
   });
 
   const [images, setImages] = useState<File[]>([]); // To store selected images
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]); // To store 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]); // To store
 
-  const userId =user?._id;
+  const userId = user?._id;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
     setFormData({ ...formData, [name]: value });
   };
 
   // Handle image file input (multiple)
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
+
     if (files) {
-      setImages(Array.from(files)); 
+      setImages(Array.from(files));
     }
   };
 
@@ -44,6 +48,7 @@ const CreatePost: React.FC = () => {
       // Upload each image to ImgBB and get the URLs
       const uploadPromises = images.map((image) => {
         const imageData = new FormData();
+
         imageData.append("image", image);
 
         const url =
@@ -63,15 +68,12 @@ const CreatePost: React.FC = () => {
       const finalData = {
         title: formData.title,
         content: formData.content,
-        category:formData.category,
+        category: formData.category,
         image: imageLinks,
-        userId:userId 
+        userId: userId,
       };
 
-  
       createPost(finalData);
-
-
     } catch (error) {
       console.error("Error uploading images:", error);
     }
@@ -80,46 +82,46 @@ const CreatePost: React.FC = () => {
   return (
     <div>
       <Input
-        type="text"
-        name="title"
-        variant="underlined"
         label="title"
+        name="title"
         placeholder="Give a Title"
+        type="text"
         value={formData.title}
+        variant="underlined"
         onChange={handleInputChange}
       />
       <Input
-        type="text"
-        name="category"
-        variant="underlined"
         label="category"
+        name="category"
         placeholder="Category"
+        type="text"
         value={formData.category}
+        variant="underlined"
         onChange={handleInputChange}
       />
       <Input
-        type="text"
-        name="content"
-        variant="underlined"
         label="content"
+        name="content"
         placeholder="Write about your post"
+        type="text"
         value={formData.content}
+        variant="underlined"
         onChange={handleInputChange}
       />
 
       {/* Multiple Image upload field */}
       <Input
-        type="file"
-        accept="image/*"
-        variant="underlined"
-        label="Upload Images"
         multiple
+        accept="image/*"
+        label="Upload Images"
+        type="file"
+        variant="underlined"
         onChange={handleImageChange}
       />
 
       <Button
-        color="primary"
         className="mt-12 right-0"
+        color="primary"
         size="sm"
         variant="ghost"
         onClick={handleSubmit}

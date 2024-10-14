@@ -1,13 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
-import { FaHome, FaUser, FaChartBar, FaSignOutAlt, FaBars, FaEdit } from "react-icons/fa";
+import React, { ReactNode, useState } from "react";
+import {
+  FaHome,
+  FaUser,
+  FaChartBar,
+  FaSignOutAlt,
+  FaBars,
+  FaEdit,
+} from "react-icons/fa";
 import Link from "next/link";
-import { logout } from "@/src/services/authService";
 import { useRouter } from "next/navigation";
+
+import { logout } from "@/src/services/authService";
 import { useUser } from "@/src/context/user.provider";
 
-const ManagementLayout = ({ children }) => {
+const ManagementLayout = ({ children }: { children: ReactNode }) => {
   const { setIsLoading } = useUser();
   const [isOpen, setIsOpen] = useState(false); // State to manage sidebar visibility
   const router = useRouter();
@@ -40,40 +48,50 @@ const ManagementLayout = ({ children }) => {
       >
         {/* Sidebar upper section */}
         <ul className="space-y-4 mt-10">
-          <Link href="/management/userManage">
-            <li className="flex items-center space-x-2 py-2 hover:text-gray-400 cursor-pointer">
-              <FaUser size={20} />
-              <span>User Management</span>
-            </li>
-          </Link>
-          <Link href="/management/postManage">
-            <li className="flex items-center space-x-2 py-2 hover:text-gray-400 cursor-pointer">
-              <FaEdit size={20} />
-              <span>Post Management</span>
-            </li>
-          </Link>
-          <Link href="/management/analysis">
-            <li className="flex items-center space-x-2 py-2 hover:text-gray-400 cursor-pointer">
-              <FaChartBar size={20} />
-              <span>Analysis</span>
-            </li>
-          </Link>
+          <li>
+            <Link href="/management/userManage">
+              <button className="flex items-center space-x-2 py-2 hover:text-gray-400 w-full text-left">
+                <FaUser size={20} />
+                <span>User Management</span>
+              </button>
+            </Link>
+          </li>
+          <li>
+            <Link href="/management/postManage">
+              <button className="flex items-center space-x-2 py-2 hover:text-gray-400 w-full text-left">
+                <FaEdit size={20} />
+                <span>Post Management</span>
+              </button>
+            </Link>
+          </li>
+          <li>
+            <Link href="/management/analysis">
+              <button className="flex items-center space-x-2 py-2 hover:text-gray-400 w-full text-left">
+                <FaChartBar size={20} />
+                <span>Analysis</span>
+              </button>
+            </Link>
+          </li>
         </ul>
 
         {/* Sidebar bottom section */}
         <div className="absolute bottom-4 w-full">
-          <Link href="/dashboard">
-            <li className="flex items-center space-x-4 hover:text-gray-400 cursor-pointer mb-4 px-2">
-              <FaHome size={20} />
-              <span>Home</span>
-            </li>
-          </Link>
-          <li
-            onClick={handleLogOut}
-            className="flex items-center space-x-4 hover:text-blue-600 cursor-pointer px-2"
-          >
-            <FaSignOutAlt size={20} />
-            <span>Logout</span>
+          <li>
+            <Link href="/dashboard">
+              <button className="flex items-center space-x-4 hover:text-gray-400 w-full text-left px-2">
+                <FaHome size={20} />
+                <span>Home</span>
+              </button>
+            </Link>
+          </li>
+          <li>
+            <button
+              className="flex items-center space-x-4 hover:text-blue-600 w-full text-left px-2"
+              onClick={handleLogOut}
+            >
+              <FaSignOutAlt size={20} />
+              <span>Logout</span>
+            </button>
           </li>
         </div>
       </aside>
@@ -82,8 +100,11 @@ const ManagementLayout = ({ children }) => {
       {isOpen && (
         <div
           className="fixed inset-0 bg-black opacity-50 z-30 lg:hidden"
+          role="button"
+          tabIndex={0} // Ensure keyboard accessibility
           onClick={toggleSidebar}
-        ></div>
+          onKeyDown={(e) => e.key === "Enter" && toggleSidebar()} // Handle keyboard interaction
+        />
       )}
 
       {/* Content Area */}

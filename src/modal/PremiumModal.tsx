@@ -1,4 +1,3 @@
-// src/modal/PremiumModal.js
 import React from "react";
 import {
   Modal,
@@ -9,25 +8,54 @@ import {
   Button,
   Divider,
 } from "@nextui-org/react";
+import { useCreatePaymentMutation } from "../redux/features/paymentApi";
+import { useGetUser } from "../hooks/auth.hooks";
 
-const PremiumModal = ({ isOpen, onClose }) => {
-    
+// Define the prop types
+interface PremiumModalProps {
+  isOpen: boolean;
+  onClose: () => void; // Function type for closing the modal
+}
+
+const PremiumModal: React.FC<PremiumModalProps> = ({ isOpen, onClose }) => {
+const {data} = useGetUser();
+const userInfo = data?.data;
+  const [createPayment] = useCreatePaymentMutation();
+  const handlePayment = async () => {
+    const paymentObject = {
+      totalAmount: 150.75,
+      customerName: userInfo?.name,
+      customerEmail: userInfo?.email,
+    };
+    try {
+      const res = await createPayment(paymentObject).unwrap();
+      window.location.href = res?.data?.payment_url;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Modal
       backdrop="opaque"
-      isOpen={isOpen}
-      onOpenChange={onClose}
       classNames={{
-        backdrop: "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
+        backdrop:
+          "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
       }}
+      isOpen={isOpen}
+      onOpenChange={onClose} // This is passed the function to handle modal close
     >
-      <ModalContent className="bg-yellow-800">
-        {(onClose) => (
+      <ModalContent>
+        {() => (
           <>
-            <ModalHeader className="flex flex-col gap-1">Premium Membership</ModalHeader>
-            <ModalBody>
-              <h3 className="text-md font-semibold">Advantages of Premium Membership:</h3>
-              <Divider></Divider>
+            <ModalHeader className="flex flex-col gap-1 ">
+              Premium Membership
+            </ModalHeader>
+            <ModalBody className="">
+              <h3 className="text-md font-semibold">
+                Advantages of Premium Membership:
+              </h3>
+              <Divider />
               <ul className="list-disc pl-5 mt-2">
                 <li>Access to exclusive content</li>
                 <li>Ad-free experience</li>
@@ -38,11 +66,23 @@ const PremiumModal = ({ isOpen, onClose }) => {
               <p className="mt-4 text-xl font-bold">$99 for Lifetime Access</p>
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" size="sm" className="rounded-full " variant="light" onPress={onClose}>
+              <Button
+                className="rounded-full"
+                color="danger"
+                size="sm"
+                variant="light"
+                onPress={onClose}
+              >
                 Close
               </Button>
-              <Button color="warning" className="rounded-full font-bold " size="sm" onPress={onClose}>
-               Subscribe
+              <Button
+              onClick={handlePayment}
+                className="rounded-full font-bold"
+                color="warning"
+                size="sm"
+                onPress={onClose}
+              >
+                Subscribe
               </Button>
             </ModalFooter>
           </>
