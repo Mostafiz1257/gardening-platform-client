@@ -17,21 +17,27 @@ const MainPage = () => {
 
   // Handle search input
   const handleSearch = (searchText: string) => {
-    setSearchValue(searchText); // Update search value
+    setSearchValue(searchText);
   };
 
   // Handle sorting input
   const handleSort = (sortOption: string) => {
-    setSortBy(sortOption); // Update sorting option
+    setSortBy(sortOption);
   };
 
   return (
-    <div>
-      {/* Pass search and sort handling to SearchPage */}
-      <SearchPage onSearch={handleSearch} onSort={handleSort} />
+    <div className='relative'>
+      {/* Fixed search bar */}
+      <div className='fixed top-0 left-0 w-full z-10 bg-black shadow-md'>
+        <SearchPage onSearch={handleSearch} onSort={handleSort} />
+      </div>
 
-      {/* Pass fetched posts and loading state to UserPost */}
-      <UserPost isLoading={isLoading} posts={data?.data} />
+      {/* Padding-top to prevent content overlap with fixed header */}
+      <div className='pt-5'>
+        {" "}
+        {/* Adjust `pt-20` or `pt-24` to match the height of your fixed header */}
+        <UserPost isLoading={isLoading} posts={data?.data} />
+      </div>
     </div>
   );
 };

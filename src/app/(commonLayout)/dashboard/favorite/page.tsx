@@ -14,35 +14,35 @@ const FavoritePostPage = () => {
     <div>
       {posts?.length > 0 ? (
         // eslint-disable-next-line prettier/prettier
-        posts.map((post:any) => (
+        posts.map((post: any) => (
           <div
             key={post._id}
-            className="max-w-md mx-auto my-4 border  bg-black rounded-lg shadow-md overflow-hidden"
+            className='max-w-md mx-auto my-4 border  bg-black rounded-lg shadow-md overflow-hidden'
           >
             {/* Post Image */}
             {post?.post?.image?.length > 0 && (
               <img
                 alt={post?.post?.title}
-                className="w-full h-48 object-cover"
-                src={post.post.image[0]} // Assuming you want to show the first image
+                className='w-full h-48 object-cover'
+                src={post.post.image[0]}
               />
             )}
 
             {/* Post Title */}
-            <div className="p-4">
-              <h2 className="text-xl font-semibold text-white">
+            <div className='p-4'>
+              <h2 className='text-xl font-semibold text-white'>
                 {post?.post?.title}
               </h2>
-              <p className="text-gray-300">{post?.post?.content}</p>
+              <p className='text-gray-300'>{post?.post?.content}</p>
 
               {/* Post Metadata */}
-              <div className="mt-4 flex justify-between items-center text-sm text-gray-200">
+              <div className='mt-4 flex justify-between items-center text-sm text-gray-200'>
                 <span>Category: {post?.post?.category}</span>
                 <span>Likes: {post?.post?.likes?.length}</span>
               </div>
 
               {/* Post Comments */}
-              <div className="mt-2 text-gray-200">
+              <div className='mt-2 text-gray-200'>
                 <span>Comments: {post?.post?.comments?.length}</span>
               </div>
             </div>

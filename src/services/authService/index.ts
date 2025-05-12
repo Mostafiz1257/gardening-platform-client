@@ -25,7 +25,7 @@ export const registerUser = async (userData: registerData) => {
   try {
     const { data } = await axios.post(
       `${envConfig.baseApi}/auth/register`,
-      userData,
+      userData
     );
 
     if (data.success) {
@@ -42,7 +42,7 @@ export const loginUser = async (userData: userDate) => {
   try {
     const { data } = await axios.post(
       `${envConfig.baseApi}/auth/login`,
-      userData,
+      userData
     );
 
     if (data.success) {

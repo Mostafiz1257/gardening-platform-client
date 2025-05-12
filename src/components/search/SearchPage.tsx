@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@nextui-org/button";
 import { useState } from "react";
 
 // Define the type for the props
@@ -34,18 +35,18 @@ const SearchPage: React.FC<SearchPageProps> = ({ onSearch, onSort }) => {
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)} // Update searchValue on input change
           />
-          <button
-            className="flex-shrink-0 bg-gray-500 hover:bg-gray-700 border-gray-500 hover:border-gray-700 text-sm border-4 text-white py-1 px-2 rounded-full"
-            type="submit"
+          <Button size="sm"
+            // className="flex-shrink-0 bg-gray-500 hover:bg-gray-700 border-gray-500 hover:border-gray-700 text-sm border-4 text-white py-1 font-sm px-2 rounded-full"
+            // type="submit"
           >
             Search
-          </button>
+          </Button >
         </div>
       </form>
 
       {/* Sort dropdown */}
       <select
-        className="ml-4 bg-black p-2 rounded"
+        className=" bg-black md:p-2 rounded"
         value={sortOption}
         onChange={handleSortChange} // Handle dropdown change
       >

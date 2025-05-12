@@ -17,7 +17,7 @@ import { SlLike, SlDislike } from "react-icons/sl";
 import { BiSolidLike, BiSolidDislike } from "react-icons/bi";
 import { toast } from "sonner";
 import Link from "next/link";
-
+import { RiUserVoiceFill } from "react-icons/ri";
 import {
   useCreateDislikeMutation,
   useCreateLikeMutation,
@@ -326,11 +326,13 @@ const PostCard = ({ post }: any) => {
             />
           </div>
         )}
-        <p className='font-bold pt-2 text-blue-700'>#{post?.category}</p>
-        <p className='text-right '>
-          <RiVipCrownFill className=' text-2xl text-yellow-500  bg-pink-600 rounded-full' />
-        </p>
-        <p className='py-2 font-medium'>{post?.content}</p>
+       
+        <p className='font-bold pt-2 text-blue-700'>{post?.title}</p>
+ 
+        <p className=' font-medium'><RiUserVoiceFill/></p>
+        <p className='font-medium'> {post?.content}</p>
+
+        <p className='font-bold pt-2  text-sm'>#{post?.category}</p>
       </CardBody>
 
       {/* Display comments directly after the post content */}

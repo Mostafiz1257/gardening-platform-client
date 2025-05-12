@@ -12,9 +12,11 @@ module.exports = {
       fontFamily: {
         sans: ["var(--font-sans)"],
         mono: ["var(--font-mono)"],
-        title:["Qwitcher Grypen"]
+        title:["Qwitcher Grypen"],
+        title2:["Yellowtail, cursive"]
       },
     },
+ 
   },
   darkMode: "class",
   plugins: [nextui()],

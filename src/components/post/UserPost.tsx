@@ -4,10 +4,11 @@ import React from "react";
 import PostCard from "./PostCard";
 
 import { IPost } from "@/src/types";
+import CardSkeleton from "@/src/skeleton/CardSkeleton";
 
 // eslint-disable-next-line prettier/prettier
 const UserPost = ({ posts, isLoading }:any) => {
-  if (isLoading) return <p>Loading posts...</p>;
+  if (isLoading) return <CardSkeleton/>;
 
   return (
     <div>

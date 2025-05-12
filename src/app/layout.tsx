@@ -7,8 +7,8 @@ import { Providers } from "./providers";
 import { fontSans } from "@/src/config/fonts";
 
 export const metadata: Metadata = {
-  title: "Garden",
-  description: "Gardening platform",
+  title: "Find Me",
+  description: "Find Me social platform",
   icons: {
     icon: "/favicon.ico",
   },
@@ -27,19 +27,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang="en">
+    <html suppressHydrationWarning lang='en'>
       <head />
       <body
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable,
+          fontSans.variable
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <div className="relative flex flex-col h-screen">
-            {/* <Navbar /> */}
-
-            <main className="container mx-auto max-w-7xl pt-5  flex-grow px-2">
+          <div className='relative flex flex-col h-screen'>
+            <main className='container mx-auto max-w-7xl pt-5  flex-grow px-2'>
               {children}
             </main>
           </div>

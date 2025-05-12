@@ -11,11 +11,12 @@ import {
   useGetAllUserQuery,
 } from "@/src/redux/features/user";
 import { IUser } from "@/src/types";
+import ProfileSkeleton from "@/src/skeleton/ProfileSkeleton";
 
 const RightSidebar = () => {
   const { data: newData, refetch: refetchUserData } = useGetUser();
   const userId = newData?.data?._id;
-  const { data } = useGetAllUserQuery({});
+  const { data, isLoading } = useGetAllUserQuery({});
   const [followUser] = useFollowUserMutation();
   const users = data?.data;
 
@@ -39,8 +40,12 @@ const RightSidebar = () => {
           <Divider className="mt-3" />
         </div>
         <div className="w-full">
-          {users?.slice(0, 5).map((user: IUser) => {
-            return (
+          {isLoading ? (
+          <>
+          <ProfileSkeleton/>
+          </>
+          ) : (
+            users?.slice(0, 6).map((user: IUser) => (
               <div
                 key={user._id}
                 className="border border-gray-900 rounded-xl p-2 my-3"
@@ -65,29 +70,27 @@ const RightSidebar = () => {
                     </div>
                   </div>
                   <div>
-                    <div>
-                      {user?._id !== userId && (
-                        <Button
-                          className="h-[30px] md:px-5"
-                          color="primary"
-                          radius="full"
-                          size="sm"
-                          variant="shadow"
-                          onClick={() => handleFollowUser(user._id)}
-                        >
-                          {newData?.data?.following?.some(
-                            (follower: any) => follower === user._id,
-                          )
-                            ? "Following"
-                            : "Follow"}
-                        </Button>
-                      )}
-                    </div>
+                    {user?._id !== userId && (
+                      <Button
+                        className="h-[30px] md:px-5"
+                        color="primary"
+                        radius="full"
+                        size="sm"
+                        variant="shadow"
+                        onClick={() => handleFollowUser(user._id)}
+                      >
+                        {newData?.data?.following?.some(
+                          (follower: any) => follower === user._id
+                        )
+                          ? "Following"
+                          : "Follow"}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
-            );
-          })}
+            ))
+          )}
           <Footer />
         </div>
       </div>

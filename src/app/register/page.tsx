@@ -23,6 +23,7 @@ const RegisterPage = () => {
     address: "",
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [isLoading, setLoading] = useState(false); // Add loading state
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -45,6 +46,8 @@ const RegisterPage = () => {
 
   const handleRegister = async () => {
     try {
+      setLoading(true); // Start loading
+
       let profileImageUrl = "";
 
       if (selectedImage) {
@@ -56,96 +59,128 @@ const RegisterPage = () => {
         profileImage: profileImageUrl || undefined,
         role: "user",
       };
-
+      console.log(userData);
       const response = await registerUser(userData);
-
       if (response.success) {
         setIsLoading(true);
         toast.success("Registration successful!");
         router.push("/dashboard");
-        console.log("response", response);
       } else {
         toast.error(response.message || "Registration failed");
       }
     } catch (error: any) {
       toast.error("Error occurred during registration");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
   return (
-    <div className="flex h-screen items-center justify-center p-4">
-      <div className="shadow-lg rounded-lg p-8 w-full max-w-md">
-        <h1 className="text-5xl font-black text-center mb-8 font-title">
-          Register Now!
-        </h1>
-        <Input
-          label="Name"
-          labelPlacement={"outside"}
-          name="name"
-          type="text"
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-        />
-        <Input
-          label="Email"
-          labelPlacement={"outside"}
-          name="email"
-          type="email"
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-        />
-        <Input
-          label="Password"
-          labelPlacement={"outside"}
-          name="password"
-          type="password"
-          onChange={(e) =>
-            setFormData({ ...formData, password: e.target.value })
-          }
-        />
-        <Input
-          label="Image"
-          labelPlacement={"outside"}
-          name="profileImage"
-          type="file"
-          onChange={handleImageChange}
-        />
-        <Input
-          label="Phone"
-          labelPlacement={"outside"}
-          name="phone"
-          type="text"
-          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-        />
-        <Input
-          label="Address"
-          labelPlacement={"outside"}
-          name="address"
-          type="text"
-          onChange={(e) =>
-            setFormData({ ...formData, address: e.target.value })
-          }
-        />
-        <Button
-          className="w-full mt-6 rounded-xl"
-          color="primary"
-          size="sm"
-          variant="ghost"
-          onClick={handleRegister}
-        >
-          Register Now
-        </Button>
-        <div className="text-center">
-          <p className="text-gray-700">
-            Already have an account?
-            <a
-              className="text-blue-600 font-semibold hover:underline"
-              href="/login"
-            >
-              Login now
-            </a>
-          </p>
+    <>
+      <div className='flex h-screen items-center justify-center p-4'>
+        <div className='shadow-lg rounded-lg p-8 w-full max-w-md'>
+          <h1 className='text-xl  text-center mb-8 font-title2'>
+            Find Me Register
+          </h1>
+
+          {/* Form with input fields in two columns */}
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+            <Input
+              label='Name'
+              labelPlacement={"outside"}
+              name='name'
+              type='text'
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+            />
+            <Input
+              label='Email'
+              labelPlacement={"outside"}
+              name='email'
+              type='email'
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+            />
+          </div>
+
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4'>
+            <Input
+              label='Password'
+              labelPlacement={"outside"}
+              name='password'
+              type='password'
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+            />
+            <Input
+              label='Phone'
+              labelPlacement={"outside"}
+              name='phone'
+              type='text'
+              onChange={(e) =>
+                setFormData({ ...formData, phone: e.target.value })
+              }
+            />
+          </div>
+
+          <div className='mt-4'>
+            <Input
+              label='Address'
+              labelPlacement={"outside"}
+              name='address'
+              type='text'
+              onChange={(e) =>
+                setFormData({ ...formData, address: e.target.value })
+              }
+            />
+          </div>
+
+          <div className='mt-4'>
+            <Input
+              label='Image'
+              labelPlacement={"outside"}
+              name='profileImage'
+              type='file'
+              onChange={handleImageChange}
+            />
+          </div>
+
+          <Button
+            className='w-full mt-6 rounded-xl  text-white hover:bg-[#001e40]'
+            color='primary'
+            size='sm'
+            variant='solid'
+            onClick={handleRegister}
+            disabled={isLoading} // Disable button when loading
+          >
+            {isLoading ? "Loading..." : "Register Now"}
+          </Button>
+
+          <div className='text-center mt-5'>
+            <p className='text-gray-700'>
+              Already have an account?
+              <a
+                className='text-blue-600 font-semibold hover:underline'
+                href='/login'
+              >
+                Login now
+              </a>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Footer */}
+      <div className='text-gray-700 text-center mb-4'>
+        <p>
+          Inspiration from X and Instagram. © 2024 Find Me. Connecting people
+          and ideas for a better world.
+        </p>
+      </div>
+    </>
   );
 };
 

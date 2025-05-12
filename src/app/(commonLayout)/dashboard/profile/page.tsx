@@ -22,18 +22,20 @@ const Profile = () => {
 
   return (
     <div>
-      <div className="md:flex justify-center items-center gap-6">
-        <Avatar
-          className="md:w-24 md:h-24 rounded-full shadow-lg"
-          src={user?.data?.profileImage}
-        />
-        <div className="ml-6 text-center md:text-left">
-          <h1 className="text-2xl font-bold text-gray-800">
-            {user?.data.name}
-          </h1>
-          <p className="text-gray-500">{user?.data.email}</p>
-        </div>
-      </div>
+     <div className="md:flex justify-center items-center gap-6">
+  <div className="flex flex-col items-center">
+    <Avatar
+      className="w-24 h-24 rounded-full shadow-lg"
+      src={user?.data?.profileImage}
+    />
+    <div className="mt-4 text-center md:mt-0 md:text-left md:ml-6">
+      <h1 className="text-2xl font-bold text-gray-800">
+        {user?.data.name}
+      </h1>
+      <p className="text-gray-500">{user?.data.email}</p>
+    </div>
+  </div>
+</div>
       <div className="flex justify-end mr-3">
         <Button
           className=" text-white rounded-full"
